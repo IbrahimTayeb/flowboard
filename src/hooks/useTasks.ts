@@ -147,9 +147,9 @@ export function useTasks(userId: string | null) {
   }, [])
 
   const updateStatus = useCallback(
-    async (taskId: string, status: TaskStatus, newPosition: number) => {
+    async (taskId: string, status: TaskStatus, newPosition: number, previousStatus?: TaskStatus) => {
       if (!userId) return
-      const previous = tasks.find((t) => t.id === taskId)
+      const priorStatus = previousStatus ?? tasks.find((t) => t.id === taskId)?.status
       setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status, position: newPosition } : t)))
 
       const { error: updateError } = await supabase
@@ -163,12 +163,12 @@ export function useTasks(userId: string | null) {
         return
       }
 
-      if (previous && previous.status !== status) {
+      if (priorStatus && priorStatus !== status) {
         await supabase.from('activity_log').insert({
           task_id: taskId,
           user_id: userId,
           type: 'status_change',
-          detail: `Moved from ${STATUS_LABEL[previous.status]} → ${STATUS_LABEL[status]}`,
+          detail: `Moved from ${STATUS_LABEL[priorStatus]} → ${STATUS_LABEL[status]}`,
         })
       }
     },

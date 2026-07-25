@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   DndContext,
   DragOverlay,
@@ -23,7 +23,7 @@ interface BoardProps {
   onTaskClick: (id: string) => void
   onAddTask: (status: TaskStatus) => void
   onMoveLocal: (taskId: string, status: TaskStatus, position: number) => void
-  onMoveCommit: (taskId: string, status: TaskStatus, position: number) => void
+  onMoveCommit: (taskId: string, status: TaskStatus, position: number, previousStatus?: TaskStatus) => void
 }
 
 function computeInsertPosition(columnTasks: Task[], activeId: string, overIndex: number): number {
@@ -39,6 +39,7 @@ function computeInsertPosition(columnTasks: Task[], activeId: string, overIndex:
 
 export function Board({ tasks, members, labels, onTaskClick, onAddTask, onMoveLocal, onMoveCommit }: BoardProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null)
+  const dragOriginStatus = useRef<TaskStatus | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -61,6 +62,7 @@ export function Board({ tasks, members, labels, onTaskClick, onAddTask, onMoveLo
   function handleDragStart(event: DragStartEvent) {
     const task = tasks.find((t) => t.id === event.active.id)
     setActiveTask(task ?? null)
+    dragOriginStatus.current = task?.status ?? null
   }
 
   function handleDragOver(event: DragOverEvent) {
@@ -104,7 +106,8 @@ export function Board({ tasks, members, labels, onTaskClick, onAddTask, onMoveLo
     const newIndex = reordered.findIndex((t) => t.id === active.id)
     const newPosition = computeInsertPosition(reordered, active.id as string, newIndex)
 
-    onMoveCommit(active.id as string, finalStatus, newPosition)
+    onMoveCommit(active.id as string, finalStatus, newPosition, dragOriginStatus.current ?? undefined)
+    dragOriginStatus.current = null
   }
 
   return (
