@@ -47,17 +47,15 @@ export function Header({
 }: HeaderProps) {
   return (
     <header className="border-b border-(--color-border) bg-(--color-surface)/80 backdrop-blur-sm">
-      <div className="flex flex-wrap items-center gap-3 px-6 py-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-500 text-white">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-white">
             <LayoutGrid size={17} />
           </div>
-          <div>
-            <h1 className="font-display text-[15px] font-semibold leading-none text-(--color-ink)">Flowboard</h1>
-          </div>
+          <h1 className="font-display text-[15px] font-semibold leading-none text-(--color-ink)">Flowboard</h1>
         </div>
 
-        <div className="ml-1 flex items-center gap-3 text-xs text-(--color-ink-muted)">
+        <div className="flex items-center gap-3 text-xs text-(--color-ink-muted)">
           <span>
             <strong className="text-(--color-ink)">{stats.total}</strong> tasks
           </span>
@@ -71,58 +69,7 @@ export function Header({
           </span>
         </div>
 
-        <div className="ml-auto flex flex-1 items-center justify-end gap-2">
-          <div className="relative w-full max-w-[220px]">
-            <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-(--color-ink-faint)" />
-            <input
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Search tasks…"
-              className="h-9 w-full rounded-lg border border-(--color-border-strong) bg-(--color-surface) pl-8 pr-3 text-sm text-(--color-ink) outline-none placeholder:text-(--color-ink-faint) focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900/40"
-            />
-          </div>
-
-          <Select
-            className="!h-9 w-[110px]"
-            value={priorityFilter ?? ''}
-            onChange={(e) => onPriorityFilterChange((e.target.value || null) as TaskPriority | null)}
-          >
-            <option value="">Priority</option>
-            <option value="low">Low</option>
-            <option value="normal">Normal</option>
-            <option value="high">High</option>
-          </Select>
-
-          <Select
-            className="!h-9 w-[130px]"
-            value={assigneeFilter ?? ''}
-            onChange={(e) => onAssigneeFilterChange(e.target.value || null)}
-          >
-            <option value="">Assignee</option>
-            {members.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name}
-              </option>
-            ))}
-          </Select>
-
-          <Select className="!h-9 w-[120px]" value={labelFilter ?? ''} onChange={(e) => onLabelFilterChange(e.target.value || null)}>
-            <option value="">Label</option>
-            {labels.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name}
-              </option>
-            ))}
-          </Select>
-
-          {hasActiveFilters && (
-            <IconButton onClick={onClearFilters} aria-label="Clear filters">
-              <X size={15} />
-            </IconButton>
-          )}
-
-          <span className="mx-1 h-6 w-px bg-(--color-border)" />
-
+        <div className="flex items-center gap-1 sm:ml-auto">
           <button onClick={onOpenTeam} className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 hover:bg-(--color-surface-sunken)">
             <Users size={15} className="text-(--color-ink-muted)" />
             <AvatarStack people={members} size={22} />
@@ -136,9 +83,64 @@ export function Header({
             {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
           </IconButton>
 
-          <Button variant="primary" icon={<Plus size={15} />} onClick={onNewTask}>
+          <Button variant="primary" icon={<Plus size={15} />} onClick={onNewTask} className="ml-1">
             New task
           </Button>
+        </div>
+
+        <div className="flex w-full flex-wrap items-center gap-2">
+          <div className="relative w-full min-w-[160px] flex-1 sm:max-w-[240px]">
+            <Search size={14} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-(--color-ink-faint)" />
+            <input
+              value={search}
+              onChange={(e) => onSearchChange(e.target.value)}
+              placeholder="Search tasks…"
+              className="h-9 w-full rounded-lg border border-(--color-border-strong) bg-(--color-surface) pl-8 pr-3 text-sm text-(--color-ink) outline-none placeholder:text-(--color-ink-faint) focus:border-brand-400 focus:ring-2 focus:ring-brand-100 dark:focus:ring-brand-900/40"
+            />
+          </div>
+
+          <Select
+            className="!h-9 w-auto min-w-[92px] shrink-0"
+            value={priorityFilter ?? ''}
+            onChange={(e) => onPriorityFilterChange((e.target.value || null) as TaskPriority | null)}
+          >
+            <option value="">Priority</option>
+            <option value="low">Low</option>
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+          </Select>
+
+          <Select
+            className="!h-9 w-auto min-w-[104px] shrink-0"
+            value={assigneeFilter ?? ''}
+            onChange={(e) => onAssigneeFilterChange(e.target.value || null)}
+          >
+            <option value="">Assignee</option>
+            {members.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name}
+              </option>
+            ))}
+          </Select>
+
+          <Select
+            className="!h-9 w-auto min-w-[92px] shrink-0"
+            value={labelFilter ?? ''}
+            onChange={(e) => onLabelFilterChange(e.target.value || null)}
+          >
+            <option value="">Label</option>
+            {labels.map((l) => (
+              <option key={l.id} value={l.id}>
+                {l.name}
+              </option>
+            ))}
+          </Select>
+
+          {hasActiveFilters && (
+            <IconButton onClick={onClearFilters} aria-label="Clear filters">
+              <X size={15} />
+            </IconButton>
+          )}
         </div>
       </div>
     </header>
