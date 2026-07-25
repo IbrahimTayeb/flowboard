@@ -24,6 +24,7 @@ interface BoardProps {
   onAddTask: (status: TaskStatus) => void
   onMoveLocal: (taskId: string, status: TaskStatus, position: number) => void
   onMoveCommit: (taskId: string, status: TaskStatus, position: number, previousStatus?: TaskStatus) => void
+  hasActiveFilters: boolean
 }
 
 function computeInsertPosition(columnTasks: Task[], activeId: string, overIndex: number): number {
@@ -37,7 +38,7 @@ function computeInsertPosition(columnTasks: Task[], activeId: string, overIndex:
   return (before + after) / 2
 }
 
-export function Board({ tasks, members, labels, onTaskClick, onAddTask, onMoveLocal, onMoveCommit }: BoardProps) {
+export function Board({ tasks, members, labels, onTaskClick, onAddTask, onMoveLocal, onMoveCommit, hasActiveFilters }: BoardProps) {
   const [activeTask, setActiveTask] = useState<Task | null>(null)
   const dragOriginStatus = useRef<TaskStatus | null>(null)
 
@@ -131,6 +132,7 @@ export function Board({ tasks, members, labels, onTaskClick, onAddTask, onMoveLo
             onTaskClick={onTaskClick}
             onAddTask={() => onAddTask(status)}
             hasAnyTasksAtAll={tasks.length > 0}
+            hasActiveFilters={hasActiveFilters}
           />
         ))}
       </div>

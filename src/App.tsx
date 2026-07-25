@@ -122,6 +122,7 @@ function BoardApp() {
             onAddTask={(status) => openCreateModal(status)}
             onMoveLocal={moveLocal}
             onMoveCommit={updateStatus}
+            hasActiveFilters={hasActiveFilters}
           />
         )}
       </main>

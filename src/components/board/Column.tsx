@@ -22,9 +22,10 @@ interface ColumnProps {
   onTaskClick: (id: string) => void
   onAddTask: () => void
   hasAnyTasksAtAll: boolean
+  hasActiveFilters: boolean
 }
 
-export function Column({ status, title, tasks, members, labels, onTaskClick, onAddTask, hasAnyTasksAtAll }: ColumnProps) {
+export function Column({ status, title, tasks, members, labels, onTaskClick, onAddTask, hasAnyTasksAtAll, hasActiveFilters }: ColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: status, data: { type: 'column', status } })
 
   return (
@@ -61,7 +62,13 @@ export function Column({ status, title, tasks, members, labels, onTaskClick, onA
           ))}
         </SortableContext>
 
-        {tasks.length === 0 && (
+        {tasks.length === 0 && hasActiveFilters && (
+          <div className="flex flex-1 flex-col items-center justify-center gap-1.5 rounded-lg py-8 text-center text-(--color-ink-faint)">
+            <span className="text-xs font-medium">No matching tasks</span>
+          </div>
+        )}
+
+        {tasks.length === 0 && !hasActiveFilters && (
           <button
             onClick={onAddTask}
             className="flex flex-1 flex-col items-center justify-center gap-1.5 rounded-lg py-8 text-center text-(--color-ink-faint) transition-colors hover:bg-(--color-surface-sunken) hover:text-(--color-ink-muted)"
